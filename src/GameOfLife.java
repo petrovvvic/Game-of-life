@@ -1,26 +1,25 @@
 import java.util.*;
 
-
-
 public class GameOfLife {
+
+    // Method to clear the console screen
     public static void clearConsole() {
-        // Print 50 newlines to "clear" the screen
         for (int i = 0; i < 50; i++) {
             System.out.println();
         }
-
     }
-    public static void toWait(){
+
+    // Method to wait for a certain period before moving to the next generation
+    public static void toWait() {
         try {
-            Thread.sleep(1000); // Adjust the time (in milliseconds) as needed
+            Thread.sleep(1000); // Wait for 1 second
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
-
-
-    public static void showState(int [][] arr ){
+    // Method to display the current state of the grid
+    public static void showState(String[][] arr) {
         for (int i = 0; i < arr.length; i++) {
             for (int j = 0; j < arr[i].length; j++) {
                 System.out.print(arr[i][j] + " ");
@@ -29,119 +28,84 @@ public class GameOfLife {
         }
     }
 
-    public static int setNeighbours(int row, int col, int [][]arr){//fucking spaghetti code nahui blyat,
-        int countOfAliveNeighbours =0;
-        int [] neighbourArr = new int[4];
-        if(row!=0 && col!=0 && row != arr.length-1 && col != arr[0].length-1 ){
-            neighbourArr[0] = arr[row][col+1];
-            neighbourArr[1] = arr[row][col-1];
-            neighbourArr[2] = arr[row+1][col];
-            neighbourArr[3] = arr[row-1][col];
-        }
-        if(row == 0 && col !=0 && col!=arr[0].length-1 ) {
-            neighbourArr[0] = arr[row][col+1];
-            neighbourArr[1] = arr[row][col-1];
-            neighbourArr[2] = arr[row+1][col];
-            neighbourArr[3] = arr[arr.length-1][col];
-        }
-        if(row == arr.length-1  && col !=0 && col!=arr[0].length-1 ) {
-            neighbourArr[0] = arr[row][col+1];
-            neighbourArr[1] = arr[row][col-1];
-            neighbourArr[2] = arr[row-1][col];
-            neighbourArr[3] = arr[0][col];
-        }
-        if(row==0 && col ==0){
-            neighbourArr[0] = arr[row][col+1];
-            neighbourArr[1] = arr[row+1][col];
-            neighbourArr[2] = arr[row][arr.length-1];
-            neighbourArr[3] = arr[arr.length-1][col];
-        }
-        if(row==0 && col ==7){
-            neighbourArr[0] = arr[row][col-1];
-            neighbourArr[1] = arr[row+1][col];
-            neighbourArr[2] = arr[row][0];
-            neighbourArr[3] = arr[col][col];
+    // Method to count the number of live neighbors for a given cell
+    public static int setNeighbours(int row, int col, String[][] arr) {
+        int countOfAliveNeighbours = 0;
+        int[] rowDirections = {-1, 1, 0, 0, -1, -1, 1, 1};
+        int[] colDirections = {0, 0, -1, 1, -1, 1, -1, 1};
 
-        }
-        if(row==7 && col ==0){
-            neighbourArr[0] = arr[row][col+1];
-            neighbourArr[1] = arr[row-1][col];
-            neighbourArr[2] = arr[col][col];
-            neighbourArr[3] = arr[row][row];
-        }
-        if(row==7 && col ==7){
-            neighbourArr[0] = arr[row][col-1];
-            neighbourArr[1] = arr[row-1][col];
-            neighbourArr[2] = arr[row][0];
-            neighbourArr[3] = arr[0][col];
-        }
-        for(int item : neighbourArr){
-            if(item ==1){
+        for (int i = 0; i < 8; i++) {
+            int newRow = (row + rowDirections[i] + arr.length) % arr.length;
+            int newCol = (col + colDirections[i] + arr[0].length) % arr[0].length;
+
+            if (arr[newRow][newCol].equals("0")) {
                 countOfAliveNeighbours++;
             }
         }
+
         return countOfAliveNeighbours;
     }
 
-    public static void main(String [] args) {
+    public static void main(String[] args) {
         Random random = new Random();
-        final int HEIGHT =20;
+        final int HEIGHT = 20;
         final int WIDTH = 50;
         Scanner scan = new Scanner(System.in);
-        int [][] arr = new int [HEIGHT][WIDTH];
-        int [][] updatedState = new int [HEIGHT][WIDTH];
+        String[][] arr = new String[HEIGHT][WIDTH];
+        String[][] updatedState = new String[HEIGHT][WIDTH];
 
-        int neighbors = 0;
+        int neighbors;
         System.out.println("Enter the amount of rounds");
         int rounds = scan.nextInt();
         int roundsTracker = 0;
 
-        for(int i =0;i<arr.length;i++) {
-            for(int j =0;j<arr[i].length;j++) {
-                arr[i][j] = random.nextInt(2);
+        // Initialize the grid with random values: "." (dead) or "0" (alive)
+        for (int i = 0; i < arr.length; i++) {
+            for (int j = 0; j < arr[i].length; j++) {
+                if (random.nextInt(2) == 1) {
+                    arr[i][j] = "0"; // Alive
+                } else {
+                    arr[i][j] = "."; // Dead
+                }
             }
         }
+
         System.out.println("Starting grid");
         showState(arr);
 
-
-        while(roundsTracker<rounds) {
-
+        while (roundsTracker < rounds) {
             clearConsole();
-            for(int i =0;i<arr.length;i++) {
-                for(int j =0;j<arr[i].length;j++) {
-                    neighbors= setNeighbours(i,j,arr);
-                    if(arr[i][j]==1){//1 == alive
-                        if(neighbors==2 || neighbors==3 ){
-                            updatedState[i][j] = 1;
-                        }
-                        else{
-                            updatedState[i][j] = 0;
-                        }
 
-                    } else if (arr[i][j]==0) {// 0 == death
-                        if(neighbors==3 ){
-                            updatedState[i][j] = 1;
-                        }
-                        else{
-                            updatedState[i][j] = 0;
-                        }
+            for (int i = 0; i < arr.length; i++) {
+                for (int j = 0; j < arr[i].length; j++) {
+                    neighbors = setNeighbours(i, j, arr);
 
+                    if (arr[i][j].equals("0")) { // Alive
+                        if (neighbors == 2 || neighbors == 3) {
+                            updatedState[i][j] = "0"; // Stay alive
+                        } else {
+                            updatedState[i][j] = "."; // Die
+                        }
+                    } else if (arr[i][j].equals(".")) { // Dead
+                        if (neighbors == 3) {
+                            updatedState[i][j] = "0"; // Reproduce
+                        } else {
+                            updatedState[i][j] = "."; // Stay dead
+                        }
                     }
-
-
                 }
             }
+
+            // Display updated state
             showState(updatedState);
 
+            // Copy updated state back to the original grid
             for (int i = 0; i < arr.length; i++) {
                 System.arraycopy(updatedState[i], 0, arr[i], 0, arr[i].length);
             }
-            roundsTracker ++;
+
+            roundsTracker++;
             toWait();
         }
-
-
     }
 }
-
