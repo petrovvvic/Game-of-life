@@ -4,7 +4,7 @@ public class GameOfLife {
 
     // Method to clear the console screen
     public static void clearConsole() {
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 2; i++) {
             System.out.println();
         }
     }
@@ -30,26 +30,29 @@ public class GameOfLife {
 
     // Method to count the number of live neighbors for a given cell
     public static int setNeighbours(int row, int col, String[][] arr) {
-        int countOfAliveNeighbours = 0;
-        int[] rowDirections = {-1, 1, 0, 0, -1, -1, 1, 1};
-        int[] colDirections = {0, 0, -1, 1, -1, 1, -1, 1};
-
-        for (int i = 0; i < 8; i++) {
-            int newRow = (row + rowDirections[i] + arr.length) % arr.length;
-            int newCol = (col + colDirections[i] + arr[0].length) % arr[0].length;
-
-            if (arr[newRow][newCol].equals("0")) {
-                countOfAliveNeighbours++;
+        int aliveNeighbours = 0; //add logic!!!
+        int [] rowDirections = {-1, -1,-1, 0, 0, 1, 1,1};
+        int[] colDirections = {-1, 0,1, 0, -1, 1, -1, 0,1};
+        int currentRow;
+        int currentCol;
+        for(int i =0; i < 8; i++){
+            currentRow = (row + rowDirections[i] + arr.length) % arr.length;
+            currentCol = (col + colDirections[i]+arr[0].length) % arr[0].length;
+            if(arr[currentRow][currentCol].equals("0")){
+                aliveNeighbours++;
             }
+
+
         }
 
-        return countOfAliveNeighbours;
+        return aliveNeighbours;
     }
+
 
     public static void main(String[] args) {
         Random random = new Random();
-        final int HEIGHT = 20;
-        final int WIDTH = 50;
+        final int HEIGHT = 5;
+        final int WIDTH = 5;
         Scanner scan = new Scanner(System.in);
         String[][] arr = new String[HEIGHT][WIDTH];
         String[][] updatedState = new String[HEIGHT][WIDTH];
