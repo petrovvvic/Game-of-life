@@ -4,15 +4,22 @@ public class GameOfLife {
 
     // Method to clear the console screen
     public static void clearConsole() {
-        for (int i = 0; i < 2; i++) {
-            System.out.println();
+        try {
+            if (System.getProperty("os.name").contains("Windows")) {
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+            } else {
+                new ProcessBuilder("clear").inheritIO().start().waitFor();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
     }
 
     // Method to wait for a certain period before moving to the next generation
     public static void toWait() {
         try {
-            Thread.sleep(1000); // Wait for 1 second
+            Thread.sleep(600); // Wait for 1 second
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -32,7 +39,7 @@ public class GameOfLife {
     public static int setNeighbours(int row, int col, String[][] arr) {
         int aliveNeighbours = 0; //add logic!!!
         int [] rowDirections = {-1, -1,-1, 0, 0, 1, 1,1};
-        int[] colDirections = {-1, 0,1, 0, -1, 1, -1, 0,1};
+        int[] colDirections = {-1, 0,1, -1, 1, -1, 0,1};
         int currentRow;
         int currentCol;
         for(int i =0; i < 8; i++){
@@ -51,8 +58,8 @@ public class GameOfLife {
 
     public static void main(String[] args) {
         Random random = new Random();
-        final int HEIGHT = 5;
-        final int WIDTH = 5;
+        final int HEIGHT = 30;
+        final int WIDTH = 30;
         Scanner scan = new Scanner(System.in);
         String[][] arr = new String[HEIGHT][WIDTH];
         String[][] updatedState = new String[HEIGHT][WIDTH];
@@ -85,15 +92,15 @@ public class GameOfLife {
 
                     if (arr[i][j].equals("0")) { // Alive
                         if (neighbors == 2 || neighbors == 3) {
-                            updatedState[i][j] = "0"; // Stay alive
+                            updatedState[i][j] = "0"; //  alive
                         } else {
-                            updatedState[i][j] = "."; // Die
+                            updatedState[i][j] = "."; // die
                         }
                     } else if (arr[i][j].equals(".")) { // Dead
                         if (neighbors == 3) {
-                            updatedState[i][j] = "0"; // Reproduce
+                            updatedState[i][j] = "0"; // re-live
                         } else {
-                            updatedState[i][j] = "."; // Stay dead
+                            updatedState[i][j] = "."; // dead
                         }
                     }
                 }
