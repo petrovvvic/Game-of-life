@@ -15,7 +15,7 @@ public class GameOfLife {
         int roundsTracker = 0;
 
         String[][] arr = setInitialState( generateGrid());
-        String[][] updatedState;
+
 
         System.out.println("There is the Starting Grid starting grid");
         showState(arr);
@@ -24,7 +24,7 @@ public class GameOfLife {
         while (roundsTracker < rounds) {
             clearConsole();
 
-            updatedState=computeNextGeneration(arr);
+            String[][] updatedState=computeNextGeneration(arr);
 
             showState(updatedState);
             setUpdatedState(updatedState,arr);
