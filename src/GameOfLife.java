@@ -2,21 +2,14 @@ import java.util.*;
 
 public class GameOfLife {
 
-    // Method to clear the console screen
+    // Method to clear the console screen, but we do with 100 empty lines
     public static void clearConsole() {
-        try {
-            if (System.getProperty("os.name").contains("Windows")) {
-                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
-            } else {
-                new ProcessBuilder("clear").inheritIO().start().waitFor();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        for (int i = 0; i < 50; i++) {
+            System.out.println();
         }
-
     }
 
-    // Method to wait for a certain period before moving to the next generation
+    // Method to wait for a  period before moving to the next generation
     public static void toWait() {
         try {
             Thread.sleep(600); // Wait for 1 second
@@ -25,7 +18,7 @@ public class GameOfLife {
         }
     }
 
-    // Method to display the current state of the grid
+    // Method to display the current state of the grid(just shows the grid)
     public static void showState(String[][] arr) {
         for (int i = 0; i < arr.length; i++) {
             for (int j = 0; j < arr[i].length; j++) {
@@ -38,8 +31,8 @@ public class GameOfLife {
     // Method to count the number of live neighbors for a given cell
     public static int setNeighbours(int row, int col, String[][] arr) {
         int aliveNeighbours = 0; //add logic!!!
-        int [] rowDirections = {-1, -1,-1, 0, 0, 1, 1,1};
-        int[] colDirections = {-1, 0,1, -1, 1, -1, 0,1};
+        int [] rowDirections = {-1,-1,-1, 0, 0, 1, 1,1};//direction for row
+        int[] colDirections = {-1, 0, 1, -1, 1, -1, 0,1};//direction for col
         int currentRow;
         int currentCol;
         for(int i =0; i < 8; i++){
@@ -48,25 +41,55 @@ public class GameOfLife {
             if(arr[currentRow][currentCol].equals("0")){
                 aliveNeighbours++;
             }
-
-
         }
-
         return aliveNeighbours;
     }
 
+    public static void welcomeUser(){
+        System.out.println("Willkommen zum Game of Life!\n" +
+                "=========================================\n" +
+                "Das Game of Life ist eine Simulation zellulärer Automaten, entwickelt von John Conway.\n" +
+                "Regeln:\n" +
+                "1. Lebende Zellen überleben mit 2 oder 3 Nachbarn.\n" +
+                "2. Tote Zellen werden bei genau 3 Nachbarn lebendig.\n" +
+                "3. Alle anderen Zellen sterben oder bleiben tot.\n");
+        System.out.println(
+                "Sie legen die gewünschte Anzahl an Generationen fest.\n" +
+                "Die Startkonfiguration wird zufällig erzeugt.\n" +
+                "Viel Spaß beim Game of Life!\n"+
+                "=========================================\n");
+    }
 
     public static void main(String[] args) {
+        Scanner scan = new Scanner(System.in);
         Random random = new Random();
+        boolean gotRounds = true;
+
         final int HEIGHT = 30;
         final int WIDTH = 30;
-        Scanner scan = new Scanner(System.in);
+
         String[][] arr = new String[HEIGHT][WIDTH];
         String[][] updatedState = new String[HEIGHT][WIDTH];
 
         int neighbors;
-        System.out.println("Enter the amount of rounds");
-        int rounds = scan.nextInt();
+        int rounds = 0;
+
+        welcomeUser();
+
+
+        System.out.println("Geben Sie die Anzahl der Generationen ein: ");
+        while(gotRounds){
+            try {
+                rounds = scan.nextInt();
+                gotRounds = false;
+
+            } catch (Exception e) {
+                System.out.println("Fehler! Bitte geben Sie eine positive ganze Zahl ein.");
+                scan.nextLine(); // sonst wird es die gleiche zeile mit falscher eingabe immer wieder lesen, so geht es auf die nächste Zeile
+            }
+
+        }
+
         int roundsTracker = 0;
 
         // Initialize the grid with random values: "." (dead) or "0" (alive)
@@ -80,7 +103,7 @@ public class GameOfLife {
             }
         }
 
-        System.out.println("Starting grid");
+        System.out.println("Startkonfiguration \n" );
         showState(arr);
 
         while (roundsTracker < rounds) {
@@ -117,5 +140,10 @@ public class GameOfLife {
             roundsTracker++;
             toWait();
         }
+        System.out.println("=========================================\n"+
+                "Das Spiel ist beendet!\n" +
+                "Vielen Dank, dass Sie das Game of Life gespielt haben.\n" +
+                "Wir hoffen, es hat Ihnen Spaß gemacht, die Evolution der Zellen zu beobachten!");
+
     }
 }
