@@ -81,6 +81,10 @@ public class GameOfLife {
         while(gotRounds){
             try {
                 rounds = scan.nextInt();
+                if(rounds<=0){
+                    System.out.println("Fehler! Bitte geben Sie eine positive ganze Zahl ein.");
+                    continue;
+                    }
                 gotRounds = false;
 
             } catch (Exception e) {
